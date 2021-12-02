@@ -56,5 +56,53 @@ function Setup(){
 	gameOverScene.visible = false;
 	game.stage.addChild(gameOverScene);
 	//#endregion
+
+	//#region Create UI
+	let buttonStyle = new PIXI.TextStyle({
+		fill: 0xFF0000,
+		fontSize: 48,
+		fontFamily: "Futura"
+	});
+
+	//#region Main menu UI
+	// Logo text.
+	// TODO: Make the logo a stylized sprite instead of plain text.
+	let logo = new PIXI.Text("Void Break", {
+		fill: 0xFFFFFF,
+		fontSize: 96,
+		fontFamily: "Futura",
+		stroke: 0xFF0000,
+		strokeThickness: 6
+	});
+	logo.anchor.set(0.5, 0.5);
+	logo.x = game.view.width / 2;
+	logo.y = 100;
+	mainMenuScene.addChild(logo);
+
+	// Start button
+	let startButton = new PIXI.Text("Start", buttonStyle);
+  startButton.x = 80;
+  startButton.y = sceneHeight - 100;
+  startButton.interactive = true;
+  startButton.buttonMode = true;
+  startButton.on("pointerup", StartGame);
+  startButton.on('pointerover', e => e.target.alpha = 0.7);
+  startButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+  mainMenuScene.addChild(startButton);
+
+	//#endregion
+
+	//#region Game UI
+
+	//#endregion
+
+	//#region Game over UI
+
+	//#endregion
+	//#endregion
 }
 //#endregion
+
+function StartGame() {
+	// TODO
+}
