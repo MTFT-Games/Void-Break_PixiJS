@@ -29,14 +29,32 @@ let playerBullets = [];
 let enemyBullets = [];
 let enemies = [];
 let player;
+let UI = {
+	
+};
 
 let mainMenuScene, gameScene, gameOverScene;
 let score = 0;
 let paused = true;
 //#endregion
 
-// TODO
+/**
+ * Sets up the initial state of the game.
+ * 
+ * To be called once after loading textures.
+ */
 function Setup(){
+	//#region Initialize scenes
+	mainMenuScene = new PIXI.Container();
+	game.stage.addChild(mainMenuScene);
 
+	gameScene = new PIXI.Container();
+	gameScene.visible = false;
+	game.stage.addChild(gameScene);
+
+	gameOverScene = new PIXI.Container();
+	gameOverScene.visible = false;
+	game.stage.addChild(gameOverScene);
+	//#endregion
 }
 //#endregion
