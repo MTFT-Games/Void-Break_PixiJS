@@ -16,10 +16,10 @@ class Player extends PIXI.Graphics {
 		gameScene.addChild(this);
 
 		// Percent of speed lost per second.
-		this.friction = 0.5;
-		this.vel = { x: 0, y: 0 };
-		this.thrust = 200;
-		this.turnSpeed = 1;
+		this.friction = 0.9;
+		this.vel = { x: 0.0, y: 0.0 };
+		this.thrust = 10.0;
+		this.turnSpeed = 3.0;
 		this.turning = "";
 		this.thrusting = false;
 
