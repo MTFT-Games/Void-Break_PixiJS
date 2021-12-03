@@ -65,6 +65,11 @@ function Setup() {
 		fontSize: 48,
 		fontFamily: "Futura"
 	});
+	let textStyle = new PIXI.TextStyle({
+		fill: 0xFFFFFF,
+		fontSize: 18,
+		fontFamily: "Futura",
+	});
 
 	//#region Main menu UI
 	// Logo text.
@@ -151,12 +156,12 @@ function Setup() {
 
 	//#region Score
 	// Score label
-	let scoreLabel = new PIXI.Text("Score: ");
+	let scoreLabel = new PIXI.Text("Score: ", textStyle);
 	gameScene.addChild(scoreLabel);
 
 	// Score counter
-	UI.score.current = new PIXI.Text("0");
 	// The text of this should be changed to keep up with the current score.
+	UI.score.current = new PIXI.Text("0", textStyle);
 	UI.score.current.x = scoreLabel.x + scoreLabel.width;
 	UI.score.current.y = scoreLabel.y;
 	gameScene.addChild(UI.score.current);
@@ -179,7 +184,7 @@ function Setup() {
 
 	// Final score counter
 	// Text should be updated when transitioning to game over scene.
-	UI.score.final = new PIXI.Text("Score: UNSET");
+	UI.score.final = new PIXI.Text("Score: UNSET", textStyle);
 	UI.score.final.anchor.set(0.5, 0.5);
 	UI.score.final.x = game.view.width / 2;
 	UI.score.final.y = 200;
