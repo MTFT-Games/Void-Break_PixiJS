@@ -59,7 +59,7 @@ function Setup() {
 	gameOverScene.visible = false;
 	game.stage.addChild(gameOverScene);
 	//#endregion
-
+	console.log(gameScene);
 	//#region Create UI
 	let buttonStyle = new PIXI.TextStyle({
 		fill: 0xFF0000,
@@ -282,7 +282,6 @@ function OnKeyDown(key) {
 	switch (key.keyCode) {
 		case 87: // W
 			player.thrusting = true;
-			console.log("W");
 			break;
 
 		case 65: // A
