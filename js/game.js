@@ -244,8 +244,14 @@ function Update() {
 	player.Update();
 }
 
+/**
+ * Ends the game and displays the game over scene.
+ */
 function EndGame() {
-	// TODO
+	paused = true;
+
+	UI.score.final.text = "Score: " + score;
+
 	gameOverScene.visible = true;
 	mainMenuScene.visible = false;
 	gameScene.visible = false;
