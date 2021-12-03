@@ -11,13 +11,13 @@ const game = new PIXI.Application({
 
 window.onload = () => {
 	document.body.appendChild(game.view);
-	
+
 	//#region Image loading
 	// TODO: Load and use textures in place of primitive shapes.
 	game.loader.
-	add([
-		
-	]);
+		add([
+
+		]);
 	game.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
 	game.loader.onComplete.add(Setup);
 	game.loader.load();
@@ -43,7 +43,7 @@ let paused = true;
  * 
  * To be called once after loading textures.
  */
-function Setup(){
+function Setup() {
 	//#region Initialize scenes
 	mainMenuScene = new PIXI.Container();
 	game.stage.addChild(mainMenuScene);
@@ -81,15 +81,14 @@ function Setup(){
 
 	// Start button
 	let startButton = new PIXI.Text("Start", buttonStyle);
-  startButton.x = 80;
-  startButton.y = sceneHeight - 100;
-  startButton.interactive = true;
-  startButton.buttonMode = true;
-  startButton.on("pointerup", StartGame);
-  startButton.on('pointerover', e => e.target.alpha = 0.7);
-  startButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
-  mainMenuScene.addChild(startButton);
-
+	startButton.x = 80;
+	startButton.y = game.view.height - 100;
+	startButton.interactive = true;
+	startButton.buttonMode = true;
+	startButton.on("pointerup", StartGame);
+	startButton.on('pointerover', e => e.target.alpha = 0.7);
+	startButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+	mainMenuScene.addChild(startButton);
 	//#endregion
 
 	//#region Game UI
@@ -105,4 +104,6 @@ function Setup(){
 
 function StartGame() {
 	// TODO
+	mainMenuScene.visible = false;
+	gameScene.visible = true;
 }
