@@ -145,19 +145,53 @@ function Setup() {
 	// The text of this should be changed to keep up with the current score.
 	UI.score.current.x = scoreLabel.x + scoreLabel.width;
 	UI.score.current.y = scoreLabel.y;
-	gameScene.addChild
-	//#endregion
-	//#endregion
+	gameScene.addChild(UI.score.current);
+	//#endregion Score
+	//#endregion Game UI
 
 	//#region Game over UI
+	// Big game over label
+	let gameOverLabel = new PIXI.Text("Game Over", {
+		fill: 0xFFFFFF,
+		fontSize: 96,
+		fontFamily: "Futura",
+		stroke: 0x0F0F0F,
+		strokeThickness: 4
+	});
+	gameOverLabel.anchor.set(0.5, 0.5);
+	gameOverLabel.x = game.view.width / 2;
+	gameOverLabel.y = 100;
+	gameOverScene.addChild(gameOverLabel);
 
-	//#endregion
-	//#endregion
+	// Final score counter
+	// Text should be updated when transitioning to game over scene.
+	UI.score.final = new PIXI.Text("Score: UNSET");
+	UI.score.final.anchor.set(0.5, 0.5);
+	UI.score.final.x = game.view.width / 2;
+	UI.score.final.y = 200;
+	gameOverScene.addChild(UI.score.final);
+
+	// Replay button
+	let restartButton = new PIXI.Text("Play again?", buttonStyle);
+	restartButton.anchor.set(0.5, 0.5);
+	restartButton.x = game.view.width / 2;
+	restartButton.y = game.view.height - 100;
+	restartButton.interactive = true;
+	restartButton.buttonMode = true;
+	restartButton.on("pointerup", StartGame);
+	restartButton.on('pointerover', e => e.target.alpha = 0.7);
+	restartButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+	gameOverScene.addChild(restartButton);
+	//#endregion Game over
+	//#endregion UI
 }
-//#endregion
+//#endregion Setup
 
 function StartGame() {
 	// TODO
+	gameOverScene.visible = false;
 	mainMenuScene.visible = false;
 	gameScene.visible = true;
 }
+
+// TODO: Better label region endings
