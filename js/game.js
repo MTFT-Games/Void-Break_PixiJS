@@ -208,11 +208,16 @@ function Setup() {
 	player = new Player();
 
 	game.ticker.add(Update);
+
+	document.addEventListener('keydown', OnKeyDown);
+	document.addEventListener('keyup', OnKeyUp);
 }
 //#endregion Setup
 
 function StartGame() {
 	// TODO
+	player.x = game.view.width/2;
+	player.y = game.view.height/2;
 	gameOverScene.visible = false;
 	mainMenuScene.visible = false;
 	gameScene.visible = true;
@@ -234,5 +239,41 @@ function EndGame() {
 	gameOverScene.visible = true;
 	mainMenuScene.visible = false;
 	gameScene.visible = false;
+}
+
+function OnKeyDown(key) {
+	switch (key.keyCode) {
+		case 87: // W
+			player.thrusting = true;
+			console.log("W");
+			break;
+
+		case 65: // A
+			player.turning = "ccw";
+			break;
+
+		case 68: // D
+			player.turning = "cw";
+			break;
+
+		default:
+			break;
+	}
+}
+
+function OnKeyUp(key) {
+	switch (key.keyCode) {
+		case 87: // W
+			player.thrusting = false;
+			break;
+
+		case 65: // A
+		case 68: // D
+			player.turning = "";
+			break;
+
+		default:
+			break;
+	}
 }
 // TODO: Better label region endings
