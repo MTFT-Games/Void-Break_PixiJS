@@ -5,11 +5,11 @@ class Player extends PIXI.Graphics {
 		// Draw shape.
 		this.lineStyle(1, 0xFFFFFF, 1);
 		this.beginFill(0xFFFFFF);
-		this.moveTo(0, 2);
-		this.lineTo(1.5, -2);
-		this.lineTo(0, -1);
-		this.lineTo(-1.5, -2);
-		this.lineTo(0,2);
+		this.moveTo(0, -2);
+		this.lineTo(1.5, 2);
+		this.lineTo(0, 1);
+		this.lineTo(-1.5, 2);
+		this.lineTo(0, -2);
 		this.endFill();
 
 		gameScene.addChild(this);
