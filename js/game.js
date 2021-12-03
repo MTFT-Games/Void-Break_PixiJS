@@ -30,8 +30,9 @@ let enemyBullets = [];
 let enemies = [];
 let player;
 let UI = {
-	score: null,
-	health: { max: null, current: null }
+	score: { current: null, final: null },
+	health: { max: null, current: null },
+	shield: { max: null, current: null}
 };
 
 let mainMenuScene, gameScene, gameOverScene;
@@ -93,23 +94,59 @@ function Setup() {
 	//#endregion
 
 	//#region Game UI
+	//#region Health bar
+	// Health bar background
 	UI.health.max = new PIXI.Graphics();
 	UI.health.max.lineStyle(5, 0x3F3F3F, 1); // Width, color, alpha
 	UI.health.max.moveTo(-1.5, 0);
 	UI.health.max.lineTo(1.5, 0);
 	UI.health.max.x = game.view.width / 2;
 	UI.health.max.y = game.view.height - 20;
-	UI.health.max.scale.set(100, 1); //Test
 	gameScene.addChild(UI.health.max);
 
+	// Health bar
 	UI.health.current = new PIXI.Graphics();
 	UI.health.current.lineStyle(5, 0xCF0000, 1); // Width, color, alpha
 	UI.health.current.moveTo(-1.5, 0);
 	UI.health.current.lineTo(1.5, 0);
 	UI.health.current.x = game.view.width / 2;
 	UI.health.current.y = game.view.height - 20;
-	UI.health.current.scale.set(80, 1); //Test
 	gameScene.addChild(UI.health.current);
+	//#endregion
+
+	//#region Shield bar
+	// TODO: Refresh bar maybe?
+	// Shield bar background
+	UI.shield.max = new PIXI.Graphics();
+	UI.shield.max.lineStyle(5, 0x3F3F3F, 1); // Width, color, alpha
+	UI.shield.max.moveTo(-1.5, 0);
+	UI.shield.max.lineTo(1.5, 0);
+	UI.shield.max.x = game.view.width / 2;
+	UI.shield.max.y = game.view.height - 14;
+	gameScene.addChild(UI.shield.max);
+
+	// Shield bar
+	UI.shield.current = new PIXI.Graphics();
+	UI.shield.current.lineStyle(5, 0x0000CF, 1); // Width, color, alpha
+	UI.shield.current.moveTo(-1.5, 0);
+	UI.shield.current.lineTo(1.5, 0);
+	UI.shield.current.x = game.view.width / 2;
+	UI.shield.current.y = game.view.height - 14;
+	gameScene.addChild(UI.shield.current);
+	//#endregion
+
+	//#region Score
+	// Score label
+	let scoreLabel = new PIXI.Text("Score: ");
+	gameScene.addChild(scoreLabel);
+
+	// Score counter
+	UI.score.current = new PIXI.Text("0");
+	// The text of this should be changed to keep up with the current score.
+	UI.score.current.x = scoreLabel.x + scoreLabel.width;
+	UI.score.current.y = scoreLabel.y;
+	gameScene.addChild
+	//#endregion
 	//#endregion
 
 	//#region Game over UI
