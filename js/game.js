@@ -83,7 +83,8 @@ function Setup() {
 
 	// Start button
 	let startButton = new PIXI.Text("Start", buttonStyle);
-	startButton.x = 80;
+	startButton.anchor.set(0.5, 0.5);
+	startButton.x = game.view.width / 2;
 	startButton.y = game.view.height - 100;
 	startButton.interactive = true;
 	startButton.buttonMode = true;
