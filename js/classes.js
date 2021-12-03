@@ -109,16 +109,18 @@ class Player extends PIXI.Graphics {
 
 		// Apply damage to shield.
 		this.shield.current -= amt;
-
+		
 		// Apply any damage the shield can't absorb to health.
 		if (this.shield.current < 0) {
 			this.health.current += this.shield.current;
 			this.shield.current = 0;
-
+			
 			// Check for death.
 			if (this.health.current <= 0) {
 				EndGame();
 			}
 		}
+		UI.shield.current.scale.set(this.shield.current, 1);
+		UI.health.current.scale.set(this.health.current, 1);
 	}
 }
