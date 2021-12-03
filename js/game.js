@@ -16,7 +16,7 @@ window.onload = () => {
 	// TODO: Load and use textures in place of primitive shapes.
 	game.loader.
 		add([
-
+			"../media/images/backgrounds/large/purple/purple-nebula-5.png"
 		]);
 	game.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
 	game.loader.onComplete.add(Setup);
@@ -101,6 +101,9 @@ function Setup() {
 	//#endregion
 
 	//#region Game UI
+	let background = new PIXI.Sprite(game.loader.resources["../media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
+	gameScene.addChild(background);
+
 	//#region Test button
 	// Test button to end the game and test the scene loop.
 	let testEndButton = new PIXI.Text("TESTING END GAME", buttonStyle);
