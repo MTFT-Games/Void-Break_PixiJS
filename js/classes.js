@@ -26,6 +26,10 @@ class Player extends PIXI.Graphics {
 		this.health = { max: 100, current: 100 };
 		this.shield = { max: 50, current: 50 };
 		this.damageCooldown = { max: 10, current: 0 };
+		UI.health.max.scale.set(this.health.max, 1);
+		UI.health.current.scale.set(this.health.current, 1);
+		UI.shield.max.scale.set(this.shield.max, 1);
+		UI.shield.current.scale.set(this.shield.current, 1);
 
 		this.projectiles = { count: 1, burst: 1, rate: 6, spread: 0, cooldown: 0 };
 		this.bullet = { type: "bullet", damage: 5, size: 1, speed: 400, enemy: false };
@@ -40,6 +44,7 @@ class Player extends PIXI.Graphics {
 	 */
 	Update() {
 		// Turn
+		// TODO: Maybe add a tiny hint of momentum to turning.
 		if (this.turning == "cw") {
 			this.angle += this.turnSpeed;
 		} else if (this.turning == "ccw") {
@@ -82,6 +87,8 @@ class Player extends PIXI.Graphics {
 
 		// TODO: shoot if off cooldown and firing
 		// TODO: regen if off cooldown
+
+
 	}
 
 	Shoot() {
