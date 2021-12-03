@@ -38,6 +38,7 @@ let UI = {
 let mainMenuScene, gameScene, gameOverScene;
 let score = 0;
 let paused = true;
+let dt;
 //#endregion
 
 /**
@@ -203,6 +204,8 @@ function Setup() {
 	gameOverScene.addChild(restartButton);
 	//#endregion Game over
 	//#endregion UI
+
+	player = new player();
 }
 //#endregion Setup
 
