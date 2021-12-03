@@ -112,6 +112,16 @@ function Setup() {
 	testEndButton.on('pointerover', e => e.target.alpha = 0.7);
 	testEndButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	gameScene.addChild(testEndButton);
+
+	let testDmgButton = new PIXI.Text("TEST DAMAGE PLAYER", buttonStyle);
+	testDmgButton.x = 10;
+	testDmgButton.y = game.view.height - 150;
+	testDmgButton.interactive = true;
+	testDmgButton.buttonMode = true;
+	testDmgButton.on("pointerup", e => player.Damage(20));
+	testDmgButton.on('pointerover', e => e.target.alpha = 0.7);
+	testDmgButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+	gameScene.addChild(testDmgButton);
 	//#endregion Test
 
 	//#region Health bar
