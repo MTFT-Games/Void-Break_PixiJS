@@ -1,6 +1,7 @@
 // TODO: Change to sprite when one is made.
 class Player extends PIXI.Graphics {
 	constructor() {
+		super();
 		// Draw shape.
 		this.lineStyle(1, 0xFFFFFF, 1);
 		this.beginFill(0xFFFFFF);
@@ -44,18 +45,18 @@ class Player extends PIXI.Graphics {
 			this.angle -= this.turnSpeed;
 		}
 
-		// Thrust
-		if (this.thrusting) {
-			this.vel.x += this.thrust * Math.sin(this.angle * (Math.PI/180));
-			this.vel.y += this.thrust * Math.cos(this.angle * (Math.PI/180));
+		// Friction
+		this.vel.x *= 1 - (this.friction * dt);
+		this.vel.y *= 1 - (this.friction * dt);
+		if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 0.01) {
+			this.vel.x = 0;
+			this.vel.y = 0;
 		}
 
-		// Friction
-		vel.x *= 1 - (this.friction * dt);
-		vel.y *= 1 - (this.friction * dt);
-		if (this.vel.x * this.vel.x + this.vel.y * this.vel.y < 20) {
-			vel.x = 0;
-			vel.y = 0;
+		// Thrust
+		if (this.thrusting) {
+			this.vel.x += this.thrust * dt * Math.sin(this.angle * (Math.PI/180));
+			this.vel.y += this.thrust * dt * Math.cos(this.angle * (Math.PI/180));
 		}
 
 		// Movement
