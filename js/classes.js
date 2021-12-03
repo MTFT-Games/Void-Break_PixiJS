@@ -11,6 +11,7 @@ class Player extends PIXI.Graphics {
 		this.lineTo(-1.5, 2);
 		this.lineTo(0, -2);
 		this.endFill();
+		this.scale.set(5);
 
 		gameScene.addChild(this);
 
