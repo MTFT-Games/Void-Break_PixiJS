@@ -30,7 +30,8 @@ let enemyBullets = [];
 let enemies = [];
 let player;
 let UI = {
-	
+	score: null,
+	health: { max: null, current: null }
 };
 
 let mainMenuScene, gameScene, gameOverScene;
@@ -92,7 +93,23 @@ function Setup() {
 	//#endregion
 
 	//#region Game UI
+	UI.health.max = new PIXI.Graphics();
+	UI.health.max.lineStyle(5, 0x3F3F3F, 1); // Width, color, alpha
+	UI.health.max.moveTo(-1.5, 0);
+	UI.health.max.lineTo(1.5, 0);
+	UI.health.max.x = game.view.width / 2;
+	UI.health.max.y = game.view.height - 20;
+	UI.health.max.scale.set(100, 1); //Test
+	gameScene.addChild(UI.health.max);
 
+	UI.health.current = new PIXI.Graphics();
+	UI.health.current.lineStyle(5, 0xCF0000, 1); // Width, color, alpha
+	UI.health.current.moveTo(-1.5, 0);
+	UI.health.current.lineTo(1.5, 0);
+	UI.health.current.x = game.view.width / 2;
+	UI.health.current.y = game.view.height - 20;
+	UI.health.current.scale.set(80, 1); //Test
+	gameScene.addChild(UI.health.current);
 	//#endregion
 
 	//#region Game over UI
