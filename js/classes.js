@@ -64,6 +64,18 @@ class Player extends PIXI.Graphics {
 		this.x += this.vel.x;
 		this.y -= this.vel.y;
 
+		// Screen wrap
+		if (this.x > game.view.width) {
+			this.x -= game.view.width;
+		} else if (this.x < 0) {
+			this.x += game.view.width;
+		}
+		if (this.y > game.view.height) {
+			this.y -= game.view.height;
+		} else if (this.y < 0) {
+			this.y += game.view.height;
+		}
+
 		// Cooldowns
 		this.damageCooldown.current -= dt;
 		this.projectiles.cooldown -= dt;
