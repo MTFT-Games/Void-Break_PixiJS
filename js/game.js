@@ -208,7 +208,7 @@ function Setup() {
 	restartButton.y = game.view.height - 100;
 	restartButton.interactive = true;
 	restartButton.buttonMode = true;
-	restartButton.on("pointerup", StartGame);
+	restartButton.on("pointerup", Restart);
 	restartButton.on('pointerover', e => e.target.alpha = 0.7);
 	restartButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	gameOverScene.addChild(restartButton);
@@ -224,14 +224,35 @@ function Setup() {
 }
 //#endregion Setup
 
+/**
+ * Starts and shows the main game scene.
+ */
 function StartGame() {
-	// TODO
-	player.x = game.view.width/2;
-	player.y = game.view.height/2;
+	// Show game.
 	gameOverScene.visible = false;
 	mainMenuScene.visible = false;
 	gameScene.visible = true;
 	paused = false;
+}
+
+/**
+ * Resets the game state and starts again.
+ */
+function Restart() {
+	// Empty all entities from last game.
+	playerBullets.forEach(e => gameScene.removeChild(e));
+	playerBullets = []
+	enemyBullets.forEach(e => gameScene.removeChild(e));
+	enemyBullets = [];
+	enemies.forEach(e => gameScene.removeChild(e));
+	enemies = [];
+
+	// Reset everything that persists.
+	player.Reset();
+	score = 0;
+	UI.score.current.text = score;
+
+	StartGame();
 }
 
 function Update() {

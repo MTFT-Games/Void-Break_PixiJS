@@ -15,13 +15,22 @@ class Player extends PIXI.Graphics {
 
 		gameScene.addChild(this);
 
-		// Percent of speed lost per second.
+		this.Reset();
+	}
+
+	/**
+	 * Resets player to initial state ready for a new game.
+	 */
+	Reset() {
 		this.friction = 0.9;
-		this.vel = { x: 0.0, y: 0.0 };
+		this.vel = { x: game.view.width/100, y: game.view.height/100 };
 		this.thrust = 10.0;
 		this.turnSpeed = 3.0;
 		this.turning = "";
 		this.thrusting = false;
+		this.x = 0;
+		this.y = game.view.height;
+		this.angle = 45;
 
 		this.health = { max: 100, current: 100 };
 		this.shield = { max: 50, current: 50 };
