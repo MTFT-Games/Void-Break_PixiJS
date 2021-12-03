@@ -95,7 +95,30 @@ class Player extends PIXI.Graphics {
 		// TODO
 	}
 
-	Damage() {
-		// TODO
+	/**
+	 * Apply damage to the player.
+	 * 
+	 * Applies damage to the players shields before health and resets damage 
+	 * cooldown. Ends game if damage is fatal.
+	 * 
+	 * @param {*} amt The amount of damage to apply.
+	 */
+	Damage(amt) {
+		// Reset damage cooldown.
+		this.damageCooldown.current = this.damageCooldown.max;
+
+		// Apply damage to shield.
+		this.shield.current -= amt;
+
+		// Apply any damage the shield can't absorb to health.
+		if (this.shield.current < 0) {
+			this.health.current += this.shield.current;
+			this.shield.current = 0;
+
+			// Check for death.
+			if (this.health.current <= 0) {
+				EndGame();
+			}
+		}
 	}
 }
