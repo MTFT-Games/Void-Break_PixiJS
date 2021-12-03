@@ -205,7 +205,7 @@ function Setup() {
 	//#endregion Game over
 	//#endregion UI
 
-	player = new player();
+	player = new Player();
 }
 //#endregion Setup
 
