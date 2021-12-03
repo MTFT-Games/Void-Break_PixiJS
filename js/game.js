@@ -94,6 +94,19 @@ function Setup() {
 	//#endregion
 
 	//#region Game UI
+	//#region Test button
+	// Test button to end the game and test the scene loop.
+	let testEndButton = new PIXI.Text("TESTING END GAME", buttonStyle);
+	testEndButton.x = 80;
+	testEndButton.y = game.view.height - 100;
+	testEndButton.interactive = true;
+	testEndButton.buttonMode = true;
+	testEndButton.on("pointerup", EndGame);
+	testEndButton.on('pointerover', e => e.target.alpha = 0.7);
+	testEndButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
+	gameScene.addChild(testEndButton);
+	//#endregion Test
+
 	//#region Health bar
 	// Health bar background
 	UI.health.max = new PIXI.Graphics();
@@ -194,4 +207,10 @@ function StartGame() {
 	gameScene.visible = true;
 }
 
+function EndGame() {
+	// TODO
+	gameOverScene.visible = true;
+	mainMenuScene.visible = false;
+	gameScene.visible = false;
+}
 // TODO: Better label region endings
