@@ -206,6 +206,8 @@ function Setup() {
 	//#endregion UI
 
 	player = new Player();
+
+	game.ticker.add(Update);
 }
 //#endregion Setup
 
@@ -214,6 +216,17 @@ function StartGame() {
 	gameOverScene.visible = false;
 	mainMenuScene.visible = false;
 	gameScene.visible = true;
+	paused = false;
+}
+
+function Update() {
+	if (paused) return;
+
+	// Delta time
+	dt = 1/game.ticker.FPS;
+	if (dt > 1/12) dt = 1/12;
+
+	player.Update();
 }
 
 function EndGame() {
