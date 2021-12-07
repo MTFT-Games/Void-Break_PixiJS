@@ -35,7 +35,8 @@ let UI = {
 	shield: { max: null, current: null}
 };
 
-let mainMenuScene, gameScene, world, gameOverScene;
+let mainMenuScene, gameScene, world, showWorld, gameOverScene;
+let worldCamera;
 let worldSize = 1024;
 let score = 0;
 let paused = true;
@@ -57,7 +58,11 @@ function Setup() {
 	game.stage.addChild(gameScene);
 
 	world = new PIXI.Container();
-	gameScene.addChild(world);
+
+	showWorld = new PIXI.Container();
+	gameScene.addChild(showWorld);
+	showWorld.x = -worldSize;
+	showWorld.y = -worldSize;
 
 	gameOverScene = new PIXI.Container();
 	gameOverScene.visible = false;
@@ -106,6 +111,47 @@ function Setup() {
 	//#region Game UI
 	let background = new PIXI.Sprite(game.loader.resources["../media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
 	world.addChild(background);
+
+	worldCamera = PIXI.RenderTexture.create(worldSize, worldSize);
+	
+	let topLeftCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(topLeftCam);
+	
+	let topCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(topCam);
+	topCam.x = worldSize;
+
+	let topRightCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(topRightCam);
+	topRightCam.x = worldSize*2;
+
+	let leftCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(leftCam);
+	leftCam.y = worldSize;
+
+	let centerCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(centerCam);
+	centerCam.x = worldSize;
+	centerCam.y = worldSize;
+
+	let rightCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(rightCam);
+	rightCam.x = worldSize*2;
+	rightCam.y = worldSize;
+
+	let bottomLeftCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(bottomLeftCam);
+	bottomLeftCam.y = worldSize*2;
+	
+	let bottomCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(bottomCam);
+	bottomCam.x = worldSize;
+	bottomCam.y = worldSize*2;
+
+	let bottomRightCam = new PIXI.Sprite(worldCamera);
+	showWorld.addChild(bottomRightCam);
+	bottomRightCam.x = worldSize*2;
+	bottomRightCam.y = worldSize*2;
 
 	//#region Test button
 	// Test button to end the game and test the scene loop.
@@ -277,6 +323,8 @@ function Update() {
 
 	playerBullets.forEach(b => { b.Update(dt); });
 	playerBullets = playerBullets.filter(b=>b.lifetime > 0);
+	game.renderer.render(world, worldCamera);
+
 }
 
 /**

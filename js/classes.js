@@ -86,13 +86,13 @@ class Player extends PIXI.Graphics {
 		// Movement
 		if (this.x > this.scrollBoundaries.posX) { // Too far right
 			if (this.vel.x > 0) { // And moving right
-				world.x -= this.vel.x;
+				showWorld.x -= this.vel.x;
 			}else {
 				this.x += this.vel.x;
 			}
 		}else if (this.x < this.scrollBoundaries.negX) { // Too far left
 			if (this.vel.x < 0) { // And moving left
-				world.x -= this.vel.x;
+				showWorld.x -= this.vel.x;
 			}else {
 				this.x += this.vel.x;
 			}
@@ -101,13 +101,13 @@ class Player extends PIXI.Graphics {
 		}
 		if (this.y > this.scrollBoundaries.posY) { // Too low
 			if (this.vel.y < 0) { // And moving down
-				world.y += this.vel.y;
+				showWorld.y += this.vel.y;
 			}else {
 				this.y -= this.vel.y;
 			}
 		}else if (this.y < this.scrollBoundaries.negY) { // Too high
 			if (this.vel.y > 0) { // And moving up
-				world.y += this.vel.y;
+				showWorld.y += this.vel.y;
 			}else {
 				this.y -= this.vel.y;
 			}
@@ -116,15 +116,15 @@ class Player extends PIXI.Graphics {
 		}
 
 		// Screen wrap
-		if (this.x - world.x > world.width) {
-			world.x += world.width;
-		} else if (this.x - world.x < 0) {
-			world.x -= world.width;
+		if (this.x - showWorld.x > worldSize*2) {
+			showWorld.x += worldSize;
+		} else if (this.x - showWorld.x < worldSize) {
+			showWorld.x -= worldSize;
 		}
-		if (this.y - world.y > world.height) {
-			world.y += world.height;
-		} else if (this.y - world.y < 0) {
-			world.y -= world.height;
+		if (this.y - showWorld.y > worldSize*2) {
+			showWorld.y += worldSize;
+		} else if (this.y - showWorld.y < worldSize) {
+			showWorld.y -= worldSize;
 		}
 
 		// Cooldowns
@@ -202,8 +202,8 @@ class Bullet extends PIXI.Graphics {
 
 		world.addChild(this);
 
-		this.x = parent.x - world.x + parent.vel.x * parent.projectiles.cooldown;
-		this.y = parent.y - world.y - parent.vel.y * parent.projectiles.cooldown;
+		this.x = parent.x - showWorld.x - worldSize + parent.vel.x * parent.projectiles.cooldown;
+		this.y = parent.y - showWorld.y - worldSize - parent.vel.y * parent.projectiles.cooldown;
 		this.angle = parent.angle;
 		this.damage = parent.bullet.damage;
 		this.vel = { 
@@ -224,15 +224,15 @@ class Bullet extends PIXI.Graphics {
 		this.y -= this.vel.y * _dt;
 		
 		// Screen wrap
-		if (this.x > world.width) {
-			this.x -= world.width;
+		if (this.x > worldSize) {
+			this.x -= worldSize;
 		} else if (this.x < 0) {
-			this.x += world.width;
+			this.x += worldSize;
 		}
-		if (this.y > world.height) {
-			this.y -= world.height;
+		if (this.y > worldSize) {
+			this.y -= worldSize;
 		} else if (this.y < 0) {
-			this.y += world.height;
+			this.y += worldSize;
 		}
 	}
 }
