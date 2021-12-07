@@ -35,7 +35,7 @@ let UI = {
 	shield: { max: null, current: null}
 };
 
-let mainMenuScene, gameScene, gameOverScene;
+let mainMenuScene, gameScene, world, gameOverScene;
 let score = 0;
 let paused = true;
 let dt;
@@ -54,6 +54,9 @@ function Setup() {
 	gameScene = new PIXI.Container();
 	gameScene.visible = false;
 	game.stage.addChild(gameScene);
+
+	world = new PIXI.Container();
+	gameScene.addChild(world);
 
 	gameOverScene = new PIXI.Container();
 	gameOverScene.visible = false;
@@ -102,7 +105,7 @@ function Setup() {
 
 	//#region Game UI
 	let background = new PIXI.Sprite(game.loader.resources["../media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
-	gameScene.addChild(background);
+	world.addChild(background);
 
 	//#region Test button
 	// Test button to end the game and test the scene loop.

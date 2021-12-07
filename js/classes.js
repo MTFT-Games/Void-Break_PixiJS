@@ -15,6 +15,14 @@ class Player extends PIXI.Graphics {
 
 		gameScene.addChild(this);
 
+		this.scrollLimit = 0;
+		this.scrollBoundaries = { 
+			posX: game.view.width/2 + this.scrollLimit, 
+			negX: game.view.width/2 - this.scrollLimit, 
+			posY: game.view.height/2 + this.scrollLimit, 
+			negY: game.view.height/2 - this.scrollLimit 
+		};
+
 		this.Reset();
 	}
 
@@ -75,19 +83,47 @@ class Player extends PIXI.Graphics {
 		}
 
 		// Movement
-		this.x += this.vel.x;
-		this.y -= this.vel.y;
+		if (this.x > this.scrollBoundaries.posX) { // Too far right
+			if (this.vel.x > 0) { // And moving right
+				world.x -= this.vel.x;
+			}else {
+				this.x += this.vel.x;
+			}
+		}else if (this.x < this.scrollBoundaries.negX) { // Too far left
+			if (this.vel.x < 0) { // And moving left
+				world.x -= this.vel.x;
+			}else {
+				this.x += this.vel.x;
+			}
+		}else { // In bounds
+			this.x += this.vel.x;
+		}
+		if (this.y > this.scrollBoundaries.posY) { // Too low
+			if (this.vel.y < 0) { // And moving down
+				world.y += this.vel.y;
+			}else {
+				this.y -= this.vel.y;
+			}
+		}else if (this.y < this.scrollBoundaries.negY) { // Too high
+			if (this.vel.y > 0) { // And moving up
+				world.y += this.vel.y;
+			}else {
+				this.y -= this.vel.y;
+			}
+		}else { // In bounds
+			this.y -= this.vel.y;
+		}
 
 		// Screen wrap
-		if (this.x > game.view.width) {
-			this.x -= game.view.width;
-		} else if (this.x < 0) {
-			this.x += game.view.width;
+		if (this.x - world.x > world.width) {
+			world.x += world.width;
+		} else if (this.x - world.x < 0) {
+			world.x -= world.width;
 		}
-		if (this.y > game.view.height) {
-			this.y -= game.view.height;
-		} else if (this.y < 0) {
-			this.y += game.view.height;
+		if (this.y - world.y > world.height) {
+			world.y += world.height;
+		} else if (this.y - world.y < 0) {
+			world.y -= world.height;
 		}
 
 		// Cooldowns
