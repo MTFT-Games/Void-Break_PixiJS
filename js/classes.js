@@ -11,7 +11,7 @@ class Player extends PIXI.Graphics {
 		this.lineTo(-1.5, 2);
 		this.lineTo(0, -2);
 		this.endFill();
-		this.scale.set(5);
+		this.scale.set(4);
 
 		gameScene.addChild(this);
 
@@ -48,9 +48,10 @@ class Player extends PIXI.Graphics {
 		UI.shield.max.scale.set(this.shield.max, 1);
 		UI.shield.current.scale.set(this.shield.current, 1);
 
-		this.projectiles = { count: 1, burst: 1, rate: 6, spread: 0, cooldown: 0 };
-		this.bullet = { type: "bullet", damage: 5, size: 1, speed: 400, enemy: false };
+		this.projectiles = { count: 1, burst: 1, rate: 5.0, spread: 0, cooldown: 0 };
+		this.bullet = { type: "bullet", damage: 5, size: 1, speed: 400, enemy: false, lifetime: 2 };
 		this.firing = false;
+		this.startFiring = false;
 	}
 
 	/**
@@ -130,14 +131,24 @@ class Player extends PIXI.Graphics {
 		this.damageCooldown.current -= dt;
 		this.projectiles.cooldown -= dt;
 
-		// TODO: shoot if off cooldown and firing
+		if (this.startFiring) {
+			this.startFiring = false;
+			this.firing = true;
+			this.projectiles.cooldown = 0;
+		}
+		while (this.firing && this.projectiles.cooldown <= 0) {
+			this.Shoot();
+		}
 		// TODO: regen if off cooldown
 
 
 	}
 
 	Shoot() {
-		// TODO
+		if (playerBullets.length < 150) {
+			playerBullets.push(new Bullet(this));
+		}
+		this.projectiles.cooldown += (1/this.projectiles.rate);
 	}
 
 	/**
@@ -167,5 +178,61 @@ class Player extends PIXI.Graphics {
 		}
 		UI.shield.current.scale.set(this.shield.current, 1);
 		UI.health.current.scale.set(this.health.current, 1);
+	}
+}
+
+class Bullet extends PIXI.Graphics {
+	//stats, playerVel, playerAngle, startingPos, timeSinceShot
+	constructor(parent) {
+		super();
+		// Draw shape.
+		if (parent.bullet.enemy) {
+			this.lineStyle(1, 0xFF0000, 1);
+		}else {
+			this.lineStyle(1, 0xFFFFFF, 1);
+		}
+		this.beginFill(0xFFFFFF);
+		this.moveTo(0, -2);
+		this.lineTo(1.5, 2);
+		this.lineTo(0, 1);
+		this.lineTo(-1.5, 2);
+		this.lineTo(0, -2);
+		this.endFill();
+		this.scale.set(parent.bullet.size);
+
+		world.addChild(this);
+
+		this.x = parent.x - world.x + parent.vel.x * parent.projectiles.cooldown;
+		this.y = parent.y - world.y - parent.vel.y * parent.projectiles.cooldown;
+		this.angle = parent.angle;
+		this.damage = parent.bullet.damage;
+		this.vel = { 
+			x: parent.vel.x + parent.bullet.speed * Math.sin(this.angle * (Math.PI/180)), 
+			y: parent.vel.y + parent.bullet.speed * Math.cos(this.angle * (Math.PI/180))
+		}
+		this.lifetime = parent.bullet.lifetime;
+		this.Update(-parent.projectiles.cooldown);
+	}
+
+	Update(_dt) {
+		this.lifetime -= _dt;
+		if (this.lifetime < 0) {
+			world.removeChild(this);
+		}
+
+		this.x += this.vel.x * _dt;
+		this.y -= this.vel.y * _dt;
+		
+		// Screen wrap
+		if (this.x > world.width) {
+			this.x -= world.width;
+		} else if (this.x < 0) {
+			this.x += world.width;
+		}
+		if (this.y > world.height) {
+			this.y -= world.height;
+		} else if (this.y < 0) {
+			this.y += world.height;
+		}
 	}
 }

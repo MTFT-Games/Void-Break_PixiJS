@@ -36,6 +36,7 @@ let UI = {
 };
 
 let mainMenuScene, gameScene, world, gameOverScene;
+let worldSize = 1024;
 let score = 0;
 let paused = true;
 let dt;
@@ -62,7 +63,6 @@ function Setup() {
 	gameOverScene.visible = false;
 	game.stage.addChild(gameOverScene);
 	//#endregion
-	console.log(gameScene);
 	//#region Create UI
 	let buttonStyle = new PIXI.TextStyle({
 		fill: 0xFF0000,
@@ -266,9 +266,17 @@ function Update() {
 
 	// Delta time
 	dt = 1/game.ticker.FPS;
+	if (game.ticker.FPS < 30) {
+		console.warn("Warning: Low FPS");
+		console.warn("FPS: " + game.ticker.FPS);
+		console.warn("Bullets: " + playerBullets.length);
+	}
 	if (dt > 1/12) dt = 1/12;
-
+	
 	player.Update();
+
+	playerBullets.forEach(b => { b.Update(dt); });
+	playerBullets = playerBullets.filter(b=>b.lifetime > 0);
 }
 
 /**
@@ -298,6 +306,12 @@ function OnKeyDown(key) {
 			player.turning = "cw";
 			break;
 
+		case 32: // space
+			if (!player.firing) {	
+				player.startFiring = true;
+			}
+			break;
+
 		default:
 			break;
 	}
@@ -312,6 +326,10 @@ function OnKeyUp(key) {
 		case 65: // A
 		case 68: // D
 			player.turning = "";
+			break;
+
+		case 32: // space
+			player.firing = false;
 			break;
 
 		default:
