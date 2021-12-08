@@ -209,7 +209,7 @@ class Bullet extends PIXI.Graphics {
 		this.vel = { 
 			x: parent.vel.x + parent.bullet.speed * Math.sin(this.angle * (Math.PI/180)), 
 			y: parent.vel.y + parent.bullet.speed * Math.cos(this.angle * (Math.PI/180))
-		}
+		};
 		this.lifetime = parent.bullet.lifetime;
 		this.Update(-parent.projectiles.cooldown);
 	}
@@ -228,7 +228,6 @@ class Bullet extends PIXI.Graphics {
 			this.y -= worldSize;
 		} else if (this.y < 0) {
 			this.y += worldSize;
-
 		}
 
 		// Check collisions with asteroids
@@ -289,6 +288,13 @@ class Asteroid extends PIXI.Graphics {
 		world.addChild(this);
 
 		this.health = size;
+
+		let speed = 10+(Math.random()*(1000/size));
+		this.angle = 360*Math.random();
+		this.vel = { 
+			x: speed * Math.sin(this.angle * (Math.PI/180)), 
+			y: speed * Math.cos(this.angle * (Math.PI/180))
+		};
 	}
 
 	Damage(amt) {
@@ -309,6 +315,23 @@ class Asteroid extends PIXI.Graphics {
 					asteroids.push(new Asteroid(this.radius / divisions, this.x, this.y));
 				}
 			}
+		}
+	}
+
+	Update(_dt) {
+		this.x += this.vel.x * _dt;
+		this.y -= this.vel.y * _dt;
+
+		// Screen wrap
+		if (this.x > worldSize) {
+			this.x -= worldSize;
+		} else if (this.x < 0) {
+			this.x += worldSize;
+		}
+		if (this.y > worldSize) {
+			this.y -= worldSize;
+		} else if (this.y < 0) {
+			this.y += worldSize;
 		}
 	}
 }

@@ -332,7 +332,6 @@ function Update() {
 	
 	playerBullets.forEach(b => { b.Update(dt); });
 	playerBullets = playerBullets.filter(b=>b.lifetime > 0);
-	game.renderer.render(world, worldCamera);
 	
 	player.Update();
 	
@@ -351,9 +350,11 @@ function Update() {
 		}
 	});
 	activeTutorials = activeTutorials.filter(e => e.parts[0].alpha > 0);
-
-	// asteroid update
+	
+	asteroids.forEach(a => { a.Update(dt); });
 	asteroids = asteroids.filter(e => e.health > 0);
+
+	game.renderer.render(world, worldCamera);
 }
 
 /**
