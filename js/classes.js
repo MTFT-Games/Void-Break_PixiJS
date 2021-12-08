@@ -13,15 +13,9 @@ class Player extends PIXI.Graphics {
 		this.endFill();
 		this.scale.set(4);
 
-		gameScene.addChild(this);
+		world.addChild(this);
 
 		this.scrollLimit = 0;
-		this.scrollBoundaries = { 
-			posX: game.view.width/2 + this.scrollLimit, 
-			negX: game.view.width/2 - this.scrollLimit, 
-			posY: game.view.height/2 + this.scrollLimit, 
-			negY: game.view.height/2 - this.scrollLimit 
-		};
 
 		this.Reset();
 	}
@@ -37,8 +31,10 @@ class Player extends PIXI.Graphics {
 		this.turning = "";
 		this.thrusting = false;
 		this.x = 0;
-		this.y = game.view.height;
+		this.y = worldSize;
 		this.angle = 45;
+		showWorld.x = -worldSize;
+		showWorld.y = -worldSize*2 + game.view.height;
 
 		this.health = { max: 100, current: 100 };
 		this.shield = { max: 50, current: 50 };
@@ -84,47 +80,41 @@ class Player extends PIXI.Graphics {
 		}
 
 		// Movement
-		if (this.x > this.scrollBoundaries.posX) { // Too far right
+		this.x += this.vel.x;
+		this.y -= this.vel.y;
+		if (this.x > -showWorld.x - worldSize + (game.view.width/2) + this.scrollLimit) { // Too far right
 			if (this.vel.x > 0) { // And moving right
 				showWorld.x -= this.vel.x;
-			}else {
-				this.x += this.vel.x;
 			}
-		}else if (this.x < this.scrollBoundaries.negX) { // Too far left
+		}else if (this.x < -showWorld.x - worldSize + (game.view.width/2) - this.scrollLimit) { // Too far left
 			if (this.vel.x < 0) { // And moving left
 				showWorld.x -= this.vel.x;
-			}else {
-				this.x += this.vel.x;
 			}
-		}else { // In bounds
-			this.x += this.vel.x;
 		}
-		if (this.y > this.scrollBoundaries.posY) { // Too low
+		if (this.y > -showWorld.y - worldSize + (game.view.height/2) + this.scrollLimit) { // Too low
 			if (this.vel.y < 0) { // And moving down
 				showWorld.y += this.vel.y;
-			}else {
-				this.y -= this.vel.y;
 			}
-		}else if (this.y < this.scrollBoundaries.negY) { // Too high
+		}else if (this.y < -showWorld.y - worldSize + (game.view.height/2) - this.scrollLimit) { // Too high
 			if (this.vel.y > 0) { // And moving up
 				showWorld.y += this.vel.y;
-			}else {
-				this.y -= this.vel.y;
 			}
-		}else { // In bounds
-			this.y -= this.vel.y;
 		}
 
 		// Screen wrap
-		if (this.x - showWorld.x > worldSize*2) {
+		if (this.x > worldSize) {
 			showWorld.x += worldSize;
-		} else if (this.x - showWorld.x < worldSize) {
+			this.x -= worldSize;
+		} else if (this.x < 0) {
 			showWorld.x -= worldSize;
+			this.x += worldSize;
 		}
-		if (this.y - showWorld.y > worldSize*2) {
+		if (this.y > worldSize) {
 			showWorld.y += worldSize;
-		} else if (this.y - showWorld.y < worldSize) {
+			this.y -= worldSize;
+		} else if (this.y < 0) {
 			showWorld.y -= worldSize;
+			this.y += worldSize;
 		}
 
 		// Cooldowns
@@ -183,7 +173,6 @@ class Player extends PIXI.Graphics {
 }
 
 class Bullet extends PIXI.Graphics {
-	//stats, playerVel, playerAngle, startingPos, timeSinceShot
 	constructor(parent) {
 		super();
 		// Draw shape.
@@ -203,8 +192,8 @@ class Bullet extends PIXI.Graphics {
 
 		world.addChild(this);
 
-		this.x = parent.x - showWorld.x - worldSize + parent.vel.x * parent.projectiles.cooldown;
-		this.y = parent.y - showWorld.y - worldSize - parent.vel.y * parent.projectiles.cooldown;
+		this.x = parent.x + parent.vel.x * parent.projectiles.cooldown;
+		this.y = parent.y - parent.vel.y * parent.projectiles.cooldown;
 		this.angle = parent.angle;
 		this.damage = parent.bullet.damage;
 		this.vel = { 
