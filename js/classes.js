@@ -236,3 +236,45 @@ class Bullet extends PIXI.Graphics {
 		}
 	}
 }
+
+class Asteroid extends PIXI.Graphics {
+	constructor(size) {
+		super();
+		//#region Generate random jaggy circle like shape
+		// Start drawing
+		this.lineStyle(1, 0xFFFFFF, 1);
+		this.beginFill(0x404040);
+
+		// Set settings
+		this.radius = size;
+		let delta = size/3.0; // Play with this later
+		let min = size - (delta/2.0);
+		let degreeStepMin = 5;
+		let degreeStepDelta = 20;
+		let currentAngle = 0;
+		let magnitude;
+
+		// Generate shape
+		// Start with a point straight up
+		let initialMagnitude = min + (Math.random()*delta);
+		this.moveTo(0, -initialMagnitude);
+		currentAngle += degreeStepMin + (Math.random()*degreeStepDelta);
+
+		// Loop generating points around the circle until back at top
+		while (currentAngle < 360) {
+			magnitude = min + (Math.random()*delta);
+			this.lineTo(
+				magnitude * Math.sin(currentAngle * (Math.PI/180)), 
+				-magnitude * Math.cos(currentAngle * (Math.PI/180))
+			);
+			currentAngle += degreeStepMin + (Math.random()*degreeStepDelta);
+		}
+
+		// Close the shape and finish
+		this.lineTo(0, -initialMagnitude);
+		this.endFill();
+		//#endregion
+
+		world.addChild(this);
+	}
+}
