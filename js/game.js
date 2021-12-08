@@ -354,6 +354,18 @@ function Update() {
 	asteroids.forEach(a => { a.Update(dt); });
 	asteroids = asteroids.filter(e => e.health > 0);
 
+	// Spawn asteroids
+	// TODO: Add option to spawn waves
+	// TODO: Add some randomness to the size
+	while (asteroids.length < 3 + (score/5)) {
+		let asteroidSpawnAngle = 360*Math.random();
+		asteroids.push(new Asteroid(
+			20+(score/20), 
+			player.x + (worldSize/2) * Math.sin(asteroidSpawnAngle * (Math.PI/180)), 
+			player.y + (worldSize/2) * Math.cos(asteroidSpawnAngle * (Math.PI/180))
+		));
+	}
+
 	game.renderer.render(world, worldCamera);
 }
 
