@@ -233,7 +233,7 @@ class Bullet extends PIXI.Graphics {
 
 		// Check collisions with asteroids
 		asteroids.forEach(asteroid => {
-			if (SimpleCircleCollisionCheck(this, asteroid)) {
+			if (this.lifetime > 0 && SimpleCircleCollisionCheck(this, asteroid)) {
 				asteroid.Damage(this.damage);
 				this.lifetime = 0;
 			}
