@@ -154,20 +154,9 @@ function Setup() {
 	bottomRightCam.y = worldSize*2;
 
 	//#region Test button
-	// Test button to end the game and test the scene loop.
-	let testEndButton = new PIXI.Text("TESTING END GAME", buttonStyle);
-	testEndButton.x = 80;
-	testEndButton.y = game.view.height - 100;
-	testEndButton.interactive = true;
-	testEndButton.buttonMode = true;
-	testEndButton.on("pointerup", EndGame);
-	testEndButton.on('pointerover', e => e.target.alpha = 0.7);
-	testEndButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
-	gameScene.addChild(testEndButton);
-
-	let testDmgButton = new PIXI.Text("TEST DAMAGE PLAYER", buttonStyle);
-	testDmgButton.x = 10;
-	testDmgButton.y = game.view.height - 150;
+	let testDmgButton = new PIXI.Text("TEST DAMAGE", buttonStyle);
+	testDmgButton.x = 200;
+	testDmgButton.y = game.view.height - 80;
 	testDmgButton.interactive = true;
 	testDmgButton.buttonMode = true;
 	testDmgButton.on("pointerup", e => player.Damage(20));
