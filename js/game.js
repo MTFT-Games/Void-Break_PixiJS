@@ -38,6 +38,7 @@ let UI = {
 let mainMenuScene, gameScene, world, showWorld, gameOverScene;
 let worldCamera;
 let worldSize = 1024;
+let activeTutorials = [];
 let score = 0;
 let paused = true;
 let dt;
@@ -274,6 +275,22 @@ function StartGame() {
 	mainMenuScene.visible = false;
 	gameScene.visible = true;
 	paused = false;
+
+	let controlsTut = new PIXI.Text("Controls:\nThrust: W\nRotate: A/D\nShoot: Space", {
+		fill: 0xFFFFFF,
+		fontSize: 24,
+		fontFamily: "Futura"
+	});
+	let controlsTutBg = new PIXI.Graphics();
+	controlsTutBg.beginFill(0x000000, 0.4);
+	controlsTutBg.drawRect(0,0,150,150);
+	controlsTutBg.endFill();
+	controlsTutBg.y = game.view.height - 150;
+	controlsTut.y = game.view.height - 125;
+	controlsTut.x = 10;
+	gameScene.addChild(controlsTutBg);
+	gameScene.addChild(controlsTut);
+	activeTutorials.push({ parts: [controlsTutBg, controlsTut], timeToShow: 10, timeToFade: 5 });
 }
 
 /**
@@ -287,6 +304,7 @@ function Restart() {
 	enemyBullets = [];
 	enemies.forEach(e => gameScene.removeChild(e));
 	enemies = [];
+	activeTutorials = [];
 
 	// Reset everything that persists.
 	player.Reset();
@@ -314,6 +332,21 @@ function Update() {
 	playerBullets = playerBullets.filter(b=>b.lifetime > 0);
 	game.renderer.render(world, worldCamera);
 
+	activeTutorials.forEach(tut => {
+		tut.timeToShow -= dt;
+		if (tut.timeToShow < 0) {
+			tut.parts.forEach(element => {
+				element.alpha += tut.timeToShow/tut.timeToFade;
+			});
+			tut.timeToShow = 0;
+			if (tut.parts[0].alpha == 0) {
+				tut.parts.forEach(element => {
+					gameScene.removeChild(element);
+				});
+			}
+		}
+	});
+	activeTutorials = activeTutorials.filter(e => e.parts[0].alpha > 0);
 }
 
 /**
