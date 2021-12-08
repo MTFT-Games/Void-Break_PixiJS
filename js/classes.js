@@ -149,6 +149,7 @@ class Player extends PIXI.Graphics {
 			playerBullets.push(new Bullet(this));
 		}
 		this.projectiles.cooldown += (1/this.projectiles.rate);
+		sounds.shoot1.play();
 	}
 
 	/**

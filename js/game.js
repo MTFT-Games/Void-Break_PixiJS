@@ -36,6 +36,8 @@ let UI = {
 	shield: { max: null, current: null}
 };
 
+let sounds = {};
+
 let mainMenuScene, gameScene, world, showWorld, gameOverScene;
 let worldCamera;
 let worldSize = 1024;
@@ -257,6 +259,10 @@ function Setup() {
 	gameOverScene.addChild(restartButton);
 	//#endregion Game over
 	//#endregion UI
+
+	// Load sounds
+	sounds.shoot1 = new Howl({ src: ['../media/sounds/shoot1.wav'] });
+	sounds.shoot1.volume(0.2);
 
 	player = new Player();
 
