@@ -304,6 +304,7 @@ class Asteroid extends PIXI.Graphics {
 
 		if (this.health <= 0) {
 			world.removeChild(this);
+			sounds.hit2.play();
 			score++;
 			UI.score.current.text = score;
 			if (this.radius > 10) {

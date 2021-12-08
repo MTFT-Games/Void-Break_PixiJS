@@ -267,6 +267,9 @@ function Setup() {
 	sounds.hit1 = new Howl({ src: ['../media/sounds/hit1.wav'] });
 	sounds.hit1.volume(0.5);
 
+	sounds.hit2 = new Howl({ src: ['../media/sounds/hit2.wav'] });
+	sounds.hit2.volume(0.5);
+
 	player = new Player();
 
 	game.ticker.add(Update);
