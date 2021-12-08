@@ -215,11 +215,6 @@ class Bullet extends PIXI.Graphics {
 	}
 
 	Update(_dt) {
-		this.lifetime -= _dt;
-		if (this.lifetime < 0) {
-			world.removeChild(this);
-		}
-
 		this.x += this.vel.x * _dt;
 		this.y -= this.vel.y * _dt;
 		
@@ -233,6 +228,20 @@ class Bullet extends PIXI.Graphics {
 			this.y -= worldSize;
 		} else if (this.y < 0) {
 			this.y += worldSize;
+
+		}
+
+		// Check collisions with asteroids
+		asteroids.forEach(asteroid => {
+			if (SimpleCircleCollisionCheck(this, asteroid)) {
+				asteroid.Damage(this.damage);
+				this.lifetime = 0;
+			}
+		});
+
+		this.lifetime -= _dt;
+		if (this.lifetime < 0) {
+			world.removeChild(this);
 		}
 	}
 }

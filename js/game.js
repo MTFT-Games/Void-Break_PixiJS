@@ -330,12 +330,12 @@ function Update() {
 	}
 	if (dt > 1/12) dt = 1/12;
 	
-	player.Update();
-
 	playerBullets.forEach(b => { b.Update(dt); });
 	playerBullets = playerBullets.filter(b=>b.lifetime > 0);
 	game.renderer.render(world, worldCamera);
-
+	
+	player.Update();
+	
 	activeTutorials.forEach(tut => {
 		tut.timeToShow -= dt;
 		if (tut.timeToShow < 0) {
