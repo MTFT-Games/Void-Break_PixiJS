@@ -300,6 +300,7 @@ class Asteroid extends PIXI.Graphics {
 
 	Damage(amt) {
 		this.health -= amt;
+		sounds.hit1.play();
 
 		if (this.health <= 0) {
 			world.removeChild(this);

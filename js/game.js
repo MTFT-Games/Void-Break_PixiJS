@@ -262,7 +262,10 @@ function Setup() {
 
 	// Load sounds
 	sounds.shoot1 = new Howl({ src: ['../media/sounds/shoot1.wav'] });
-	sounds.shoot1.volume(0.2);
+	sounds.shoot1.volume(0.3);
+
+	sounds.hit1 = new Howl({ src: ['../media/sounds/hit1.wav'] });
+	sounds.hit1.volume(0.5);
 
 	player = new Player();
 
