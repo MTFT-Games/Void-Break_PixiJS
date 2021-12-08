@@ -238,7 +238,7 @@ class Bullet extends PIXI.Graphics {
 }
 
 class Asteroid extends PIXI.Graphics {
-	constructor(size) {
+	constructor(size, _x, _y) {
 		super();
 		//#region Generate random jaggy circle like shape
 		// Start drawing
@@ -275,6 +275,31 @@ class Asteroid extends PIXI.Graphics {
 		this.endFill();
 		//#endregion
 
+		this.x = _x;
+		this.y = _y;
 		world.addChild(this);
+
+		this.health = size;
+	}
+
+	Damage(amt) {
+		this.health -= amt;
+
+		if (this.health <= 0) {
+			world.removeChild(this);
+			score++;
+			UI.score.current.text = score;
+			if (this.radius > 10) {
+				// Divide
+				let maxDivisions = Math.floor(this.radius/5);
+				if (maxDivisions > 5) {
+					maxDivisions = 5;
+				}
+				let divisions = Math.floor(2 + (Math.random()*(maxDivisions-1)));
+				for (let i = 0; i < divisions; i++) {
+					asteroids.push(new Asteroid(this.radius / divisions, this.x, this.y));
+				}
+			}
+		}
 	}
 }

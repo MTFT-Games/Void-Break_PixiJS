@@ -28,6 +28,7 @@ window.onload = () => {
 let playerBullets = [];
 let enemyBullets = [];
 let enemies = [];
+let asteroids = [];
 let player;
 let UI = {
 	score: { current: null, final: null },
@@ -298,13 +299,16 @@ function StartGame() {
  */
 function Restart() {
 	// Empty all entities from last game.
-	playerBullets.forEach(e => gameScene.removeChild(e));
+	playerBullets.forEach(e => world.removeChild(e));
 	playerBullets = []
-	enemyBullets.forEach(e => gameScene.removeChild(e));
+	enemyBullets.forEach(e => world.removeChild(e));
 	enemyBullets = [];
-	enemies.forEach(e => gameScene.removeChild(e));
+	enemies.forEach(e => world.removeChild(e));
 	enemies = [];
+	activeTutorials.forEach(e => gameScene.removeChild(e));
 	activeTutorials = [];
+	asteroids.forEach(e => world.removeChild(e));
+	asteroids = [];
 
 	// Reset everything that persists.
 	player.Reset();
@@ -347,6 +351,9 @@ function Update() {
 		}
 	});
 	activeTutorials = activeTutorials.filter(e => e.parts[0].alpha > 0);
+
+	// asteroid update
+	asteroids = asteroids.filter(e => e.health > 0);
 }
 
 /**
