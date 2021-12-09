@@ -19,3 +19,12 @@ function SimpleCircleCollisionCheck(A, B) {
         return true;
     }
 }
+
+// normalize vector
+function NormalizeVector(vector) {
+    let result = {};
+    let magnitude = Math.sqrt(((vector.x)*(vector.x))+((vector.y)*(vector.y)));
+    result.x = vector.x / magnitude;
+    result.y = vector.y / magnitude;
+    return result;
+}
