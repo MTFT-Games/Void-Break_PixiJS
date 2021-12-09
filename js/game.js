@@ -16,7 +16,7 @@ window.onload = () => {
 	// TODO: Load and use textures in place of primitive shapes.
 	game.loader.
 		add([
-			"../media/images/backgrounds/large/purple/purple-nebula-5.png"
+			"media/images/backgrounds/large/purple/purple-nebula-5.png"
 		]);
 	game.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
 	game.loader.onComplete.add(Setup);
@@ -113,7 +113,7 @@ function Setup() {
 	//#endregion
 
 	//#region Game UI
-	let background = new PIXI.Sprite(game.loader.resources["../media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
+	let background = new PIXI.Sprite(game.loader.resources["media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
 	world.addChild(background);
 
 	worldCamera = PIXI.RenderTexture.create(worldSize, worldSize);
@@ -261,13 +261,13 @@ function Setup() {
 	//#endregion UI
 
 	// Load sounds
-	sounds.shoot1 = new Howl({ src: ['../media/sounds/shoot1.wav'] });
+	sounds.shoot1 = new Howl({ src: ['media/sounds/shoot1.wav'] });
 	sounds.shoot1.volume(0.3);
 
-	sounds.hit1 = new Howl({ src: ['../media/sounds/hit1.wav'] });
+	sounds.hit1 = new Howl({ src: ['media/sounds/hit1.wav'] });
 	sounds.hit1.volume(0.5);
 
-	sounds.hit2 = new Howl({ src: ['../media/sounds/hit2.wav'] });
+	sounds.hit2 = new Howl({ src: ['media/sounds/hit2.wav'] });
 	sounds.hit2.volume(0.5);
 
 	player = new Player();
