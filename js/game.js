@@ -372,7 +372,7 @@ function Update() {
 	while (asteroids.length < 3 + (score/5)) {
 		let asteroidSpawnAngle = 360*Math.random();
 		asteroids.push(new Asteroid(
-			20+(score/20), 
+			20+(score/5), 
 			player.x + (worldSize/2) * Math.sin(asteroidSpawnAngle * (Math.PI/180)), 
 			player.y + (worldSize/2) * Math.cos(asteroidSpawnAngle * (Math.PI/180))
 		));

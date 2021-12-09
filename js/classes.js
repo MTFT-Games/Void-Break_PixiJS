@@ -129,9 +129,34 @@ class Player extends PIXI.Graphics {
 		while (this.firing && this.projectiles.cooldown <= 0) {
 			this.Shoot();
 		}
+
 		// TODO: regen if off cooldown
 
+		// Collisions
+		asteroids.forEach(asteroid => {
+			if (SimpleCircleCollisionCheck(this, asteroid)) {
+				// Get direction from this to the asteroid
+				let impactDirection = { x: asteroid.x - this.x, y: -(asteroid.y - this.y) };
+				
+				// Knock back the asteroid
+				asteroid.vel.x += impactDirection.x * (this.health.max / 20);
+				asteroid.vel.y += impactDirection.y * (this.health.max / 20);
 
+				// Calculate capped asteroid damage
+				let cappedAstDmg = asteroid.radius;
+				if (cappedAstDmg > 30) {
+					cappedAstDmg = 30;
+				}
+
+				// Knock back the player
+				this.vel.x -= (cappedAstDmg/3) * impactDirection.x * .03;
+				this.vel.y -= (cappedAstDmg/3) * impactDirection.y * .03;
+
+				// Doll out damage
+				this.Damage(cappedAstDmg);
+				asteroid.Damage(this.health.max);
+			}
+		});
 	}
 
 	Shoot() {
@@ -298,6 +323,7 @@ class Asteroid extends PIXI.Graphics {
 			UI.score.current.text = score;
 			if (this.radius > 10) {
 				// Divide
+				// TODO: add original velocity to the new frags
 				let maxDivisions = Math.floor(this.radius/5);
 				if (maxDivisions > 5) {
 					maxDivisions = 5;
