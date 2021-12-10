@@ -25,9 +25,9 @@ class Player extends PIXI.Graphics {
 	 */
 	Reset() {
 		this.friction = 0.9;
-		this.vel = { x: game.view.width/100, y: game.view.height/100 };
-		this.thrust = 10.0;
-		this.turnSpeed = 3.0;
+		this.vel = { x: game.view.width, y: game.view.height };
+		this.thrust = 600.0;
+		this.turnSpeed = 180.0;
 		this.turning = "";
 		this.thrusting = false;
 		this.x = 0;
@@ -60,9 +60,9 @@ class Player extends PIXI.Graphics {
 		// Turn
 		// TODO: Maybe add a tiny hint of momentum to turning.
 		if (this.turning == "cw") {
-			this.angle += this.turnSpeed;
+			this.angle += this.turnSpeed * dt;
 		} else if (this.turning == "ccw") {
-			this.angle -= this.turnSpeed;
+			this.angle -= this.turnSpeed * dt;
 		}
 
 		// Friction
@@ -80,24 +80,24 @@ class Player extends PIXI.Graphics {
 		}
 
 		// Movement
-		this.x += this.vel.x;
-		this.y -= this.vel.y;
+		this.x += this.vel.x * dt;
+		this.y -= this.vel.y * dt;
 		if (this.x > -showWorld.x - worldSize + (game.view.width/2) + this.scrollLimit) { // Too far right
 			if (this.vel.x > 0) { // And moving right
-				showWorld.x -= this.vel.x;
+				showWorld.x -= this.vel.x * dt;
 			}
 		}else if (this.x < -showWorld.x - worldSize + (game.view.width/2) - this.scrollLimit) { // Too far left
 			if (this.vel.x < 0) { // And moving left
-				showWorld.x -= this.vel.x;
+				showWorld.x -= this.vel.x * dt;
 			}
 		}
 		if (this.y > -showWorld.y - worldSize + (game.view.height/2) + this.scrollLimit) { // Too low
 			if (this.vel.y < 0) { // And moving down
-				showWorld.y += this.vel.y;
+				showWorld.y += this.vel.y * dt;
 			}
 		}else if (this.y < -showWorld.y - worldSize + (game.view.height/2) - this.scrollLimit) { // Too high
 			if (this.vel.y > 0) { // And moving up
-				showWorld.y += this.vel.y;
+				showWorld.y += this.vel.y * dt;
 			}
 		}
 
@@ -156,8 +156,8 @@ class Player extends PIXI.Graphics {
 				}
 
 				// Knock back the player
-				this.vel.x -= (cappedAstDmg/3) * impactDirection.x * .03;
-				this.vel.y -= (cappedAstDmg/3) * impactDirection.y * .03;
+				this.vel.x -= (cappedAstDmg/3) * impactDirection.x;
+				this.vel.y -= (cappedAstDmg/3) * impactDirection.y;
 
 				// Doll out damage
 				this.Damage(cappedAstDmg);
