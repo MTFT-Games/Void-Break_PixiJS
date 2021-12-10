@@ -130,7 +130,14 @@ class Player extends PIXI.Graphics {
 			this.Shoot();
 		}
 
-		// TODO: regen if off cooldown
+		// Regen if off cooldown
+		if (this.shield.current < this.shield.max && this.damageCooldown.current <= 0) {
+			this.shield.current += (this.shield.max/15) * dt;
+			if (this.shield.current > this.shield.max) {
+				this.shield.current = this.shield.max;
+			}
+			UI.shield.current.scale.set(this.shield.current, 1);
+		}
 
 		// Collisions
 		asteroids.forEach(asteroid => {
