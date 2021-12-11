@@ -16,7 +16,7 @@ window.onload = () => {
 	// TODO: Load and use textures in place of primitive shapes.
 	game.loader.
 		add([
-			"media/images/backgrounds/large/purple/purple-nebula-5.png"
+			"media/images/backgrounds/large/purple/purple-nebula-5.jpg"
 		]);
 	game.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
 	game.loader.onComplete.add(setup);
@@ -115,7 +115,7 @@ function setup() {
 	//#region Game UI
 	// Background
 	let background = new PIXI.Sprite(game.loader.resources[
-		"media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
+		"media/images/backgrounds/large/purple/purple-nebula-5.jpg"].texture);
 	world.addChild(background);
 
 	// RenderTexture, essentially a camera on the world scene that I 
