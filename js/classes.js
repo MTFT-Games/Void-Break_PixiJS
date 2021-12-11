@@ -1,8 +1,10 @@
-// TODO: Change to sprite when one is made.
+/**
+ * Represents the player ship.
+ */
 class Player extends PIXI.Graphics {
 	constructor() {
 		super();
-		// Draw shape.
+		// Draw shape
 		this.lineStyle(1, 0xFFFFFF, 1);
 		this.beginFill(0xFFFFFF);
 		this.moveTo(0, -2);
@@ -17,25 +19,29 @@ class Player extends PIXI.Graphics {
 
 		this.scrollLimit = 0;
 
-		this.Reset();
+		this.reset();
 	}
 
 	/**
 	 * Resets player to initial state ready for a new game.
 	 */
-	Reset() {
+	reset() {
+		// Motion stats
 		this.friction = 0.9;
 		this.vel = { x: game.view.width, y: game.view.height };
 		this.thrust = 600.0;
 		this.turnSpeed = 180.0;
 		this.turning = "";
 		this.thrusting = false;
+
+		// Position
 		this.x = 0;
 		this.y = worldSize;
 		this.angle = 45;
 		showWorld.x = -worldSize;
 		showWorld.y = -worldSize*2 + game.view.height;
 
+		// Health and shields
 		this.health = { max: 100, current: 100 };
 		this.shield = { max: 50, current: 50 };
 		this.damageCooldown = { max: 10, current: 0 };
@@ -44,6 +50,7 @@ class Player extends PIXI.Graphics {
 		UI.shield.max.scale.set(this.shield.max, 1);
 		UI.shield.current.scale.set(this.shield.current, 1);
 
+		// Shooting stats
 		this.projectiles = { count: 1, burst: 1, rate: 5.0, spread: 0, cooldown: 0 };
 		this.bullet = { type: "bullet", damage: 5, size: 1, speed: 400, enemy: false, lifetime: 2 };
 		this.firing = false;
@@ -54,9 +61,9 @@ class Player extends PIXI.Graphics {
 	 * Update the state of this player.
 	 * 
 	 * Updates and applies rotation, thrust, friction, velocity, cooldowns, regen, 
-	 * and shooting.
+	 * screen wrapping, collisions, and shooting.
 	 */
-	Update() {
+	update() {
 		// Turn
 		// TODO: Maybe add a tiny hint of momentum to turning.
 		if (this.turning == "cw") {
@@ -82,26 +89,32 @@ class Player extends PIXI.Graphics {
 		// Movement
 		this.x += this.vel.x * dt;
 		this.y -= this.vel.y * dt;
-		if (this.x > -showWorld.x - worldSize + (game.view.width/2) + this.scrollLimit) { // Too far right
+
+		// Move the showWorld scene to keep the camera on the player
+		if (this.x > -showWorld.x - worldSize + (game.view.width/2) + this.scrollLimit) { 
+			// Too far right
 			if (this.vel.x > 0) { // And moving right
 				showWorld.x -= this.vel.x * dt;
 			}
-		}else if (this.x < -showWorld.x - worldSize + (game.view.width/2) - this.scrollLimit) { // Too far left
+		}else if (this.x < -showWorld.x - worldSize + (game.view.width/2) - this.scrollLimit) { 
+			// Too far left
 			if (this.vel.x < 0) { // And moving left
 				showWorld.x -= this.vel.x * dt;
 			}
 		}
-		if (this.y > -showWorld.y - worldSize + (game.view.height/2) + this.scrollLimit) { // Too low
+		if (this.y > -showWorld.y - worldSize + (game.view.height/2) + this.scrollLimit) { 
+			// Too low
 			if (this.vel.y < 0) { // And moving down
 				showWorld.y += this.vel.y * dt;
 			}
-		}else if (this.y < -showWorld.y - worldSize + (game.view.height/2) - this.scrollLimit) { // Too high
+		}else if (this.y < -showWorld.y - worldSize + (game.view.height/2) - this.scrollLimit) { 
+			// Too high
 			if (this.vel.y > 0) { // And moving up
 				showWorld.y += this.vel.y * dt;
 			}
 		}
 
-		// Screen wrap
+		// Screen wrap, move player and camera to the other side of the world when at edge
 		if (this.x > worldSize) {
 			showWorld.x += worldSize;
 			this.x -= worldSize;
@@ -121,13 +134,14 @@ class Player extends PIXI.Graphics {
 		this.damageCooldown.current -= dt;
 		this.projectiles.cooldown -= dt;
 
+		// Shoot
 		if (this.startFiring) {
 			this.startFiring = false;
 			this.firing = true;
 			this.projectiles.cooldown = 0;
 		}
 		while (this.firing && this.projectiles.cooldown <= 0) {
-			this.Shoot();
+			this.shoot();
 		}
 
 		// Regen if off cooldown
@@ -141,11 +155,12 @@ class Player extends PIXI.Graphics {
 
 		// Collisions
 		asteroids.forEach(asteroid => {
-			if (SimpleCircleCollisionCheck(this, asteroid)) {
+			if (simpleCircleCollisionCheck(this, asteroid)) {
 				// Get direction from this to the asteroid
 				let impactDirection = { x: asteroid.x - this.x, y: -(asteroid.y - this.y) };
 				
 				// Knock back the asteroid
+				// TODO: I forgot to normalize the vector first... that will cause fuckieness
 				asteroid.vel.x += impactDirection.x * (this.health.max / 20);
 				asteroid.vel.y += impactDirection.y * (this.health.max / 20);
 
@@ -160,13 +175,16 @@ class Player extends PIXI.Graphics {
 				this.vel.y -= (cappedAstDmg/3) * impactDirection.y;
 
 				// Doll out damage
-				this.Damage(cappedAstDmg);
-				asteroid.Damage(this.health.max);
+				this.damage(cappedAstDmg);
+				asteroid.damage(this.health.max);
 			}
 		});
 	}
 
-	Shoot() {
+	/**
+	 * Spawns and launches bullets according to the projectile settings.
+	 */
+	shoot() {
 		if (playerBullets.length < 150) {
 			playerBullets.push(new Bullet(this));
 		}
@@ -182,7 +200,7 @@ class Player extends PIXI.Graphics {
 	 * 
 	 * @param {*} amt The amount of damage to apply.
 	 */
-	Damage(amt) {
+	damage(amt) {
 		// Reset damage cooldown.
 		this.damageCooldown.current = this.damageCooldown.max;
 
@@ -196,9 +214,11 @@ class Player extends PIXI.Graphics {
 			
 			// Check for death.
 			if (this.health.current <= 0) {
-				EndGame();
+				endGame();
 			}
 		}
+
+		// Update ui
 		UI.shield.current.scale.set(this.shield.current, 1);
 		UI.health.current.scale.set(this.health.current, 1);
 	}
@@ -224,19 +244,29 @@ class Bullet extends PIXI.Graphics {
 
 		world.addChild(this);
 
+		// Start position at parent
 		this.x = parent.x + parent.vel.x * parent.projectiles.cooldown;
 		this.y = parent.y - parent.vel.y * parent.projectiles.cooldown;
 		this.angle = parent.angle;
-		this.damage = parent.bullet.damage;
 		this.vel = { 
 			x: parent.vel.x + parent.bullet.speed * Math.sin(this.angle * (Math.PI/180)), 
 			y: parent.vel.y + parent.bullet.speed * Math.cos(this.angle * (Math.PI/180))
 		};
+
+		this.damage = parent.bullet.damage;
 		this.lifetime = parent.bullet.lifetime;
-		this.Update(-parent.projectiles.cooldown);
+		this.update(-parent.projectiles.cooldown);
 	}
 
-	Update(_dt) {
+	/**
+	 * Update the state of the bullet.
+	 * 
+	 * Apply velocity, screen wrap, check collision, and tick down lifetime.
+	 * 
+	 * @param {*} _dt Probably not necessary since dt is script scope.
+	 */
+	update(_dt) {
+		// Move
 		this.x += this.vel.x * _dt;
 		this.y -= this.vel.y * _dt;
 		
@@ -254,12 +284,13 @@ class Bullet extends PIXI.Graphics {
 
 		// Check collisions with asteroids
 		asteroids.forEach(asteroid => {
-			if (this.lifetime > 0 && SimpleCircleCollisionCheck(this, asteroid)) {
-				asteroid.Damage(this.damage);
+			if (this.lifetime > 0 && simpleCircleCollisionCheck(this, asteroid)) {
+				asteroid.damage(this.damage);
 				this.lifetime = 0;
 			}
 		});
 
+		// Tick down lifetime and delete if up.
 		this.lifetime -= _dt;
 		if (this.lifetime < 0) {
 			world.removeChild(this);
@@ -267,6 +298,9 @@ class Bullet extends PIXI.Graphics {
 	}
 }
 
+/**
+ * An asteroid obstacle.
+ */
 class Asteroid extends PIXI.Graphics {
 	constructor(size, _x, _y) {
 		super();
@@ -277,7 +311,7 @@ class Asteroid extends PIXI.Graphics {
 
 		// Set settings
 		this.radius = size;
-		let delta = size/3.0; // Play with this later
+		let delta = size/3.0;
 		let min = size - (delta/2.0);
 		let degreeStepMin = 5;
 		let degreeStepDelta = 20;
@@ -292,11 +326,14 @@ class Asteroid extends PIXI.Graphics {
 
 		// Loop generating points around the circle until back at top
 		while (currentAngle < 360) {
+			// Get a random magnitude within limits.
 			magnitude = min + (Math.random()*delta);
 			this.lineTo(
 				magnitude * Math.sin(currentAngle * (Math.PI/180)), 
 				-magnitude * Math.cos(currentAngle * (Math.PI/180))
 			);
+
+			// Advance by a random degree within limits.
 			currentAngle += degreeStepMin + (Math.random()*degreeStepDelta);
 		}
 
@@ -305,12 +342,15 @@ class Asteroid extends PIXI.Graphics {
 		this.endFill();
 		//#endregion
 
+		// Set given position
 		this.x = _x;
 		this.y = _y;
+
 		world.addChild(this);
 
 		this.health = size;
 
+		// Randomize velocity and rotation
 		let speed = 10+(Math.random()*(1000/size));
 		this.angle = 360*Math.random();
 		this.vel = { 
@@ -319,13 +359,22 @@ class Asteroid extends PIXI.Graphics {
 		};
 	}
 
-	Damage(amt) {
+	/**
+	 * Applies damage to the asteroid and splits the asteroid if applicable.
+	 * 
+	 * @param {*} amt 
+	 */
+	damage(amt) {
+		// Damage
 		this.health -= amt;
 		sounds.hit1.play();
 
+		// Destroy this
 		if (this.health <= 0) {
 			world.removeChild(this);
 			sounds.hit2.play();
+
+			// Add score
 			score++;
 			UI.score.current.text = score;
 			if (this.radius > 10) {
@@ -343,7 +392,13 @@ class Asteroid extends PIXI.Graphics {
 		}
 	}
 
-	Update(_dt) {
+	/**
+	 * Update the state of the asteroid.
+	 * 
+	 * @param {*} _dt Probably not needed since dt is script scope.
+	 */
+	update(_dt) {
+		// Move
 		this.x += this.vel.x * _dt;
 		this.y -= this.vel.y * _dt;
 

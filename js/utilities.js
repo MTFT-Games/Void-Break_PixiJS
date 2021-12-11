@@ -1,4 +1,12 @@
-function SimpleCircleCollisionCheck(A, B) {
+/**
+ * Checks for collisions between two objects by using circles with a radius 
+ * based off the largest dimension.
+ * 
+ * @param {*} A The first object.
+ * @param {*} B The second object.
+ * @returns True if collision detected.
+ */
+function simpleCircleCollisionCheck(A, B) {
     let ACircle = { x: A.x, y: A.y };
     let BCircle = { x: B.x, y: B.y };
     if (A.width > A.height) {
@@ -20,8 +28,13 @@ function SimpleCircleCollisionCheck(A, B) {
     }
 }
 
-// normalize vector
-function NormalizeVector(vector) {
+/**
+ * Normalizes a vector.
+ * 
+ * @param {*} vector The vector to be normalized.
+ * @returns The normalized vector.
+ */
+function normalizeVector(vector) {
     let result = {};
     let magnitude = Math.sqrt(((vector.x)*(vector.x))+((vector.y)*(vector.y)));
     result.x = vector.x / magnitude;

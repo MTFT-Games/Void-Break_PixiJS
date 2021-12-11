@@ -1,7 +1,7 @@
 //#region Setup
 //#region PIXI init
 "use strict";
-/* TODO: Dynamically size the window and scale the game toy the size of the 
+/* TODO: Dynamically size the window and scale the game to the size of the 
 browser window. */
 const game = new PIXI.Application({
 	width: 600,
@@ -19,7 +19,7 @@ window.onload = () => {
 			"media/images/backgrounds/large/purple/purple-nebula-5.png"
 		]);
 	game.loader.onProgress.add(e => { console.log(`progress=${e.progress}`) });
-	game.loader.onComplete.add(Setup);
+	game.loader.onComplete.add(setup);
 	game.loader.load();
 	//#endregion
 };
@@ -52,7 +52,7 @@ let dt;
  * 
  * To be called once after loading textures.
  */
-function Setup() {
+function setup() {
 	//#region Initialize scenes
 	mainMenuScene = new PIXI.Container();
 	game.stage.addChild(mainMenuScene);
@@ -106,16 +106,20 @@ function Setup() {
 	startButton.y = game.view.height - 100;
 	startButton.interactive = true;
 	startButton.buttonMode = true;
-	startButton.on("pointerup", StartGame);
+	startButton.on("pointerup", startGame);
 	startButton.on('pointerover', e => e.target.alpha = 0.7);
 	startButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	mainMenuScene.addChild(startButton);
 	//#endregion
 
 	//#region Game UI
-	let background = new PIXI.Sprite(game.loader.resources["media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
+	// Background
+	let background = new PIXI.Sprite(game.loader.resources[
+		"media/images/backgrounds/large/purple/purple-nebula-5.png"].texture);
 	world.addChild(background);
 
+	// RenderTexture, essentially a camera on the world scene that I 
+	// can paste 9 times for (almost) seamless world wrapping.
 	worldCamera = PIXI.RenderTexture.create(worldSize, worldSize);
 	
 	let topLeftCam = new PIXI.Sprite(worldCamera);
@@ -156,18 +160,6 @@ function Setup() {
 	showWorld.addChild(bottomRightCam);
 	bottomRightCam.x = worldSize*2;
 	bottomRightCam.y = worldSize*2;
-
-	//#region Test button
-	let testDmgButton = new PIXI.Text("TEST DAMAGE", buttonStyle);
-	testDmgButton.x = 200;
-	testDmgButton.y = game.view.height - 80;
-	testDmgButton.interactive = true;
-	testDmgButton.buttonMode = true;
-	testDmgButton.on("pointerup", e => player.Damage(20));
-	testDmgButton.on('pointerover', e => e.target.alpha = 0.7);
-	testDmgButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
-	gameScene.addChild(testDmgButton);
-	//#endregion Test
 
 	//#region Health bar
 	// Health bar background
@@ -253,7 +245,7 @@ function Setup() {
 	restartButton.y = game.view.height - 100;
 	restartButton.interactive = true;
 	restartButton.buttonMode = true;
-	restartButton.on("pointerup", Restart);
+	restartButton.on("pointerup", restart);
 	restartButton.on('pointerover', e => e.target.alpha = 0.7);
 	restartButton.on('pointerout', e => e.currentTarget.alpha = 1.0);
 	gameOverScene.addChild(restartButton);
@@ -272,7 +264,7 @@ function Setup() {
 
 	player = new Player();
 
-	game.ticker.add(Update);
+	game.ticker.add(update);
 
 	document.addEventListener('keydown', OnKeyDown);
 	document.addEventListener('keyup', OnKeyUp);
@@ -282,13 +274,14 @@ function Setup() {
 /**
  * Starts and shows the main game scene.
  */
-function StartGame() {
+function startGame() {
 	// Show game.
 	gameOverScene.visible = false;
 	mainMenuScene.visible = false;
 	gameScene.visible = true;
 	paused = false;
 
+	// Show controls tutorial
 	let controlsTut = new PIXI.Text("Controls:\nThrust: W\nRotate: A/D\nShoot: Space", {
 		fill: 0xFFFFFF,
 		fontSize: 24,
@@ -309,7 +302,7 @@ function StartGame() {
 /**
  * Resets the game state and starts again.
  */
-function Restart() {
+function restart() {
 	// Empty all entities from last game.
 	playerBullets.forEach(e => world.removeChild(e));
 	playerBullets = []
@@ -323,30 +316,41 @@ function Restart() {
 	asteroids = [];
 
 	// Reset everything that persists.
-	player.Reset();
+	player.reset();
 	score = 0;
 	UI.score.current.text = score;
 
-	StartGame();
+	startGame();
 }
 
-function Update() {
+/**
+ * Main game update loop.
+ * 
+ * Calculates delta time, filters out dead items from arrays, updates tutorials 
+ * and other objects, and spawns asteroids. 
+ */
+function update() {
 	if (paused) return;
 
 	// Delta time
 	dt = 1/game.ticker.FPS;
+	if (dt > 1/12) dt = 1/12;
+
+	// Low fps warning
 	if (game.ticker.FPS < 30) {
 		console.warn("Warning: Low FPS");
 		console.warn("FPS: " + game.ticker.FPS);
 		console.warn("Bullets: " + playerBullets.length);
 	}
-	if (dt > 1/12) dt = 1/12;
 	
-	playerBullets.forEach(b => { b.Update(dt); });
+	// Update bullets
+	playerBullets.forEach(b => { b.update(dt); });
 	playerBullets = playerBullets.filter(b=>b.lifetime > 0);
 	
-	player.Update();
+	// Update player
+	player.update();
 	
+	// Update tutorials
 	activeTutorials.forEach(tut => {
 		tut.timeToShow -= dt;
 		if (tut.timeToShow < 0) {
@@ -363,7 +367,8 @@ function Update() {
 	});
 	activeTutorials = activeTutorials.filter(e => e.parts[0].alpha > 0);
 	
-	asteroids.forEach(a => { a.Update(dt); });
+	// Update asteroids
+	asteroids.forEach(a => { a.update(dt); });
 	asteroids = asteroids.filter(e => e.health > 0);
 
 	// Spawn asteroids
@@ -378,13 +383,14 @@ function Update() {
 		));
 	}
 
+	// Update the world camera render
 	game.renderer.render(world, worldCamera);
 }
 
 /**
  * Ends the game and displays the game over scene.
  */
-function EndGame() {
+function endGame() {
 	paused = true;
 
 	UI.score.final.text = "Score: " + score;
@@ -394,6 +400,11 @@ function EndGame() {
 	gameScene.visible = false;
 }
 
+/**
+ * Handles any input of a pressed key.
+ * 
+ * @param {*} key The key that was pressed.
+ */
 function OnKeyDown(key) {
 	switch (key.keyCode) {
 		case 87: // W
@@ -419,6 +430,11 @@ function OnKeyDown(key) {
 	}
 }
 
+/**
+ * Handles any input of a released key.
+ * 
+ * @param {*} key The key that was released.
+ */
 function OnKeyUp(key) {
 	switch (key.keyCode) {
 		case 87: // W
